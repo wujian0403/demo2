@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+		<style type="text/css">
+			.title {
+				border: 1px lightgray solid;
+				margin-top: 20px;
+				margin-bottom: 0;
+				line-height: 40px;
+			}
+
+			a {
+				cursor: pointer;
+			}
+
+			.left,
+			.right {
+				border: 1px lightgray solid;
+				height: 500px;
+			}
+			.container{
+				width: 800px;
+			}
+			.list-group-item {
+				border: none;
+				cursor: pointer;
+			}
+			.row{
+				overflow: hidden;
+			}
+			.left{
+				width: 145px;
+				float: left;
+			}
+			.right{
+				width: 650px;
+				float: right;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<p class="row title">&nbsp;&nbsp;学生奖惩管理系统|&nbsp;&nbsp;欢迎您，<span>[[${session.USER}]]</span>&nbsp;&nbsp;|<a href="">注销</a></p>
+			<div class="row">
+				<div class="col-lg-2 left">
+					<ul class="list-group">
+						<li class="list-group-item studentList">学生列表</li>
+						<li class="list-group-item manage">奖惩管理</li>
+						<li class="list-group-item exit">退出系统</li>
+					</ul>
+				</div>
+				<div class="col-lg-10 right">
+					<form class="form-group" action="/api/update" method="post">
+						<input type="hidden" th:value="${reward.id}" name="id">
+						<div class="form-group">
+							<label for="name">奖惩记录名：</label>
+							<input type="text" class="form-control" rid="${reward.id}" name="name" id="name" th:value="${reward.name}">
+						</div>
+						<div class="form-group">
+							<label for="stuName">奖惩对象:</label>
+							<select class="form-control" id="stuName" name="stucode">
+								<option th:each="item,index:${student.list}" th:text="${item.name}" th:selected="${item.name == reward.stucode ? 'selected' : 'false'}"></option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="desc">描述:</label>
+							<textarea  class="form-control" id="desc" name="des" th:text="${reward.des}"></textarea>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="修改">
+							<button class="btn cancle">取消</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+	<script src="js/dialog.js"></script>
+	<script src="js/vue.js"></script>
+	<script>
+		// $(".rewardAndPublishment").show().siblings().hide();
+		// $(".studentList").show().siblings().hide();
+		
+		$(".update").click(function(){
+			var record = {};
+			record["id"] = $("#name").attr("rid");
+			record["name"] = $("#name").val();
+			record["stucode"] = $("#stuName").val();
+			record["des"] = $("#desc").val();
+			$.ajax({
+				url:"/api/update",
+				type:"post",
+				dataType:"json",
+				data:JSON.stringify(record),
+				success:function(data){
+					alert(data.msg);
+					location.href="/api/stu?code=null&stu=null&current=1&pageSize=5";
+				}
+			})
+		})
+	</script>
+</html>

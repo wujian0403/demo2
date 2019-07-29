@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8" />
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+		<META HTTP-EQUIV="Expires" CONTENT="0">
+		<title></title>
+		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+		<style type="text/css">
+			.title {
+				border: 1px lightgray solid;
+				margin-top: 20px;
+				margin-bottom: 0;
+				line-height: 40px;
+			}
+
+			a {
+				cursor: pointer;
+			}
+
+			.left,
+			.right {
+				border: 1px lightgray solid;
+				height: 500px;
+			}
+
+			.container{
+				width: 800px;
+			}
+			.list-group-item {
+				border: none;
+				cursor: pointer;
+			}
+			.row{
+				overflow: hidden;
+			}
+			.left{
+				width: 145px;
+				float: left;
+			}
+			.right{
+				width: 650px;
+				float: right;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<p class="row title">&nbsp;&nbsp;学生奖惩管理系统|&nbsp;&nbsp;欢迎您，<span>[[${session.USER}]]</span>&nbsp;&nbsp;|<a th:href="@{/c/login}">注销</a></p>
+			<div class="row">
+				<div class="col-lg-2 left">
+					<ul class="list-group">
+						<li class="list-group-item stuList"><a th:href="@{/api/stuList?current=1&pageSize=5}">学生列表</a></li>
+						<li class="list-group-item manage"><a th:href="@{/api/stu/null/null/1/5}">奖惩管理</a></li>
+						<li class="list-group-item exit"><a th:href="@{/c/login}">退出系统</a></li>
+					</ul>
+				</div>
+				<div class="col-lg-10 right">
+					<!-- 奖惩管理 -->
+					<div class="rewardAndPublishment">
+						<h2 class="h2">奖惩管理</h2>
+						<form class="form-inline" submit="return false">
+							<div class="form-group">
+								<label for="rap">奖惩：</label>
+								<input type="text" class="form-control" id="rap" placeholder="">
+							</div>
+							<div class="form-group">
+								<label for="stuName">学生姓名:</label>
+								<input type="text" class="form-control" id="stuName" placeholder="">
+							</div>
+							<div class="form-group">
+								<button class="btn search" type="button" name="search">查询</button>
+								<button class="btn add"><a href="/c/add">添加</a></button>
+							</div>
+						</form>
+						<table class="table">
+							<thead>
+								<th>序号</th>
+								<th>奖惩</th>
+								<th>学生姓名</th>
+								<th>创建人</th>
+								<th>创建时间</th>
+								<th>操作</th>
+							</thead>
+							<tbody th:remove="${stuRe.list.size()==0?'none':'all-but-first'}">
+								<tr th:each="temp,iter:${stuRe.list}">
+									<td th:text="${iter.count}"></td>
+									<td th:text="${temp.name}"></td>
+									<td th:text="${temp.stucode}"></td>
+									<td th:text="${temp.createby}"></td>
+									<td th:text="${#dates.format(temp.createdate,'yyyy-MM-dd')}"></td>
+									<td>
+										<a th:href="|/api/toUpdate?id=${temp.id}|" id="${temp.id}" class="update">修改</a>
+										<a th:href="|/api/delete?id=${temp.id}|">删除</a>
+									</td>
+								</tr>
+								<tr>
+									<th colspan="6" style="color:red">没有找到数据！</th>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="9">
+										当前是第<span class="current">[[${stuRe.pageNum}]]</span>页，共<span class="total">[[${stuRe.pages}]]</span>页&nbsp;&nbsp;
+										<span th:remove="${stuRe.pages==1?'all':'none'}">
+											<a class="first">首页</a>&nbsp;&nbsp;
+											<a class="next" th:next="${stuRe.nextPage}">下一页</a>&nbsp;&nbsp;
+											<a class="last">尾页</a>
+										</span>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+	<script>
+// 		$(".delete").click(function(){
+// 			var rid = $(this).attr("rid");
+// 			if(confirm("请问您确定要删除吗？")){
+// 				$.ajax({
+// 					url:"/api/delete?id="+rid,
+// 					type:"post",
+// 					dataType:"json",
+// 					success:function(data){
+// 						alert(data.msg);
+// 						window.location.href="/api/stu/null/null/1/5";
+// 					}
+// 				})
+// 			}
+// 		})
+		
+		$("[name=search]").click(function(){
+			var code = $("#rap").val();
+			var name = $("#stuName").val();
+			if(code == ""){
+				code = null;
+			}
+			if(name == ""){
+				name = null;
+			}
+			window.location.href="/api/stu/"+code+"/"+name+"/1/5";
+		})
+		
+		$(".first").click(function(){
+			var code = $("#rap").val();
+			var name = $("#stuName").val();
+			if(code == ""){
+				code = null;
+			}
+			if(name == ""){
+				name = null;
+			}
+			location.href="/api/stu/"+code+"/"+name+"/1/5";
+		})
+		
+		$(".next").click(function(){
+			var code = $("#rap").val();
+			var name = $("#stuName").val();
+// 			var current = $(".current").html();
+			var next = $(this).attr("next");
+			if(code == ""){
+				code = null;
+			}
+			if(name == ""){
+				name = null;
+			}
+			location.href="/api/stu/"+code+"/"+name+"/"+next+"/5";
+		})
+		
+		$(".last").click(function(){
+			var code = $("#rap").val();
+			var name = $("#stuName").val();
+			if(code == ""){
+				code = null;
+			}
+			if(name == ""){
+				name = null;
+			}
+			var total = $(".total").html();
+			location.href="/api/stu/"+code+"/"+name+"/"+total+"/5";
+		})
+	</script>
+</html>

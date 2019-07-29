@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8" />
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+		<META HTTP-EQUIV="Expires" CONTENT="0">
+		<title></title>
+		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+		<style type="text/css">
+			.title {
+				border: 1px lightgray solid;
+				margin-top: 20px;
+				margin-bottom: 0;
+				line-height: 40px;
+			}
+
+			a {
+				cursor: pointer;
+			}
+			.container{
+				width: 800px;
+			}
+			.left,
+			.right {
+				border: 1px lightgray solid;
+				height: 500px;
+			}
+
+			.list-group-item {
+				border: none;
+				cursor: pointer;
+				list-style: none;
+			}
+			.row{
+				overflow: hidden;
+			}
+			.left{
+				width: 145px;
+				float: left;
+			}
+			.right{
+				width: 650px;
+				float: right;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<p class="row title">&nbsp;&nbsp;学生奖惩管理系统|&nbsp;&nbsp;欢迎您，<span>[[${session.USER}]]</span>&nbsp;&nbsp;|<a th:href="@{/c/login}">注销</a></p>
+			<div class="row">
+				<div class="col-lg-2 left">
+					<ul class="list-group">
+						<li class="list-group-item stuList"><a th:href="@{/api/stuList?current=1&pageSize=5}">学生列表</a></li>
+						<li class="list-group-item manage"><a th:href="@{/api/stu/null/null/1/5}">奖惩管理</a></li>
+						<li class="list-group-item exit"><a th:href="@{/c/login}">退出系统</a></li>
+					</ul>
+				</div>
+				<div class="col-lg-10 right">
+					<div class="welcome">
+						<h1>欢迎来到学生奖惩管理系统</h1>
+					</div>
+				</div>	
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+	<script>
+// 		$(".welcome").show().siblings().hide();
+		// $(".rewardAndPublishment").show().siblings().hide();
+		// $(".studentList").show().siblings().hide();
+		
+	</script>
+</html>

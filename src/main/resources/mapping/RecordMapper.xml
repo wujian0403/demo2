@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.IRecordDAO">
+
+   <select id="findRecordByStudent" resultType="Record">
+  	select * from record 
+  	<where>
+  		<if test="code != '' and code != null and code != 'null'">
+  			and stucode = #{code}
+  		</if>
+  	</where>
+  	order by createBy desc
+  </select>
+  
+  <select id="findRecordAll" resultType="record">
+  	select * from record 
+  	<where>
+  		<if test="code != '' and code != null and code != 'null'">
+  			and `name` like '%${code}%'
+  		</if>
+  		<if test="stu != '' and stu != null and stu != 'null'">
+  			and `stucode` like '%${stu}%'
+  		</if>
+  	</where>
+  	order by createBy desc
+  </select>
+  
+  <insert id="insert">
+  	INSERT INTO `record`(`name`,`stuCode`,`createDate`,`createBy`,`des`)
+	VALUES(#{record.name},#{record.stucode},NOW(),#{record.createby},#{record.des})
+  </insert>
+
+	<update id="updateByPrimaryKey">
+		UPDATE `record` SET `name`=#{record.name},`stuCode`=#{record.stucode}
+		,`des`=#{record.des} WHERE `id`=#{record.id}
+	</update>
+	
+	<delete id="deleteByPrimaryKey">
+		delete from record where id = #{id}
+	</delete>
+	
+	<select id="selectByPrimaryKey" resultType="record">
+		select * from record where id = #{id}
+	</select>
+
+</mapper>    

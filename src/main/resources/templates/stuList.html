@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8" />
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+		<META HTTP-EQUIV="Expires" CONTENT="0">
+		<title></title>
+		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+		<style type="text/css">
+			.title {
+				border: 1px lightgray solid;
+				margin-top: 20px;
+				margin-bottom: 0;
+				line-height: 40px;
+			}
+
+			a {
+				cursor: pointer;
+			}
+
+			.container{
+				width: 800px;
+			}
+			.left,
+			.right {
+				border: 1px lightgray solid;
+				height: 500px;
+			}
+
+			.list-group-item {
+				border: none;
+				cursor: pointer;
+			}
+			.row{
+				overflow: hidden;
+			}
+			.left{
+				width: 145px;
+				float: left;
+			}
+			.right{
+				width: 650px;
+				float: right;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<p class="row title">&nbsp;&nbsp;学生奖惩管理系统|&nbsp;&nbsp;欢迎您，<span>[[${session.USER}]]</span>&nbsp;&nbsp;|<a th:href="@{/c/login}">注销</a></p>
+			<div class="row">
+				<div class="col-lg-2 left">
+					<ul class="list-group">
+						<li class="list-group-item stuList"><a th:href="@{/api/stuList?current=1&pageSize=5}">学生列表</a></li>
+						<li class="list-group-item manage"><a th:href="@{/api/stu/null/null/1/5}">奖惩管理</a></li>
+						<li class="list-group-item exit"><a th:href="@{/c/login}">退出系统</a></li>
+					</ul>
+				</div>
+				<div class="col-lg-10 right">
+					<!-- 学生信息 -->
+					<div class="studentList">
+						<h2 class="h2">学生信息</h2>
+						<table class="table">
+							<thead>
+								<th>学号</th>
+								<th>姓名</th>
+								<th>职务</th>
+								<th>专业</th>
+								<th>班级</th>
+								<th>性别</th>
+								<th>生日</th>
+								<th>电话</th>
+								<th>操作</th>
+							</thead>
+							<tbody th:remove="${PAGE_INFO.list.size()==0?'none':'all-but-first'}">
+								<tr th:each="temp,iter:${PAGE_INFO.list}">
+									<td th:text="${iter.count}"></td>
+									<td th:text="${temp.name}"></td>
+									<td>
+										<div th:switch="${temp.job}">
+											<span th:case="1">普通学生</span>
+											<span th:case="2">组长</span>
+											<span th:case="3">班长</span>
+										</div>
+									</td>
+									<td>
+										<div th:switch="${temp.major}">
+											<span th:case="1">计算机</span>
+											<span th:case="2">电气</span>
+											<span th:case="3">金融</span>
+										</div>
+									</td>
+									<td th:text="${temp.grade}"></td>
+									<td>
+										<div th:switch="${temp.sex}">
+											<span th:case="1">男</span>
+											<span th:case="2">女</span>
+										</div>
+									</td>
+									<td th:text="${#dates.format(temp.birthday,'yyyy-MM-dd')}"></td>
+									<td th:text="${temp.tel}"></td>
+									<td class="searchStuInfo" style="cursor: pointer;">查看</td>
+								</tr>
+								<tr>
+									<th colspan="8" style="color:red">没有找到数据！</th>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="9">
+										当前是第<span class="current">[[${PAGE_INFO.pageNum}]]</span>页，共<span class="total">[[${PAGE_INFO.pages}]]</span>页&nbsp;&nbsp;
+										<span th:remove="${PAGE_INFO.pages==1?'all':'none'}">
+											<a class="first">首页</a>&nbsp;&nbsp;
+											<a class="next" th:next="${PAGE_INFO.nextPage}">下一页</a>&nbsp;&nbsp;
+											<a class="last">尾页</a>
+										</span>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+						<div class='studentInfo'>
+						
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+	<script>
+		//查看学生具体信息
+		$(document).on("click",".searchStuInfo",function(){
+// 			alert("chakan")
+			var code = $(this).parents("tr").find("td:eq(1)").html();
+			$.ajax({
+				url:"/api/stuReAndPu?code="+code,
+				dataType:"json",
+				type:"post",
+				success:function(data){
+					$(".studentInfo").html("");
+					if(data != "" || data != null){
+						$(".studentInfo").append($("<table class='table'><thead><th>序号</th><th>奖惩</th><th>学生姓名</th><th>创建人</th><th>描述</th></thead><tbody id='stutb'></tbody></table>"));
+						$.each(data,function(i,item){
+							$("#stutb").append($("<tr><td>"+(i+1)+"</td><td>"+item.name+"</td><td>"+item.stucode+"</td><td>"+item.createby+"</td><td>"+item.des+"</td></tr>"));
+						})
+					}else{
+						$(".studentList").after($("<div class='studentInfo'><table class='table'><tr><td colspan='5'>未找到记录</td></tr></table></div>"));
+					}
+				}
+			})
+		})
+		
+		$(".first").click(function(){
+			var current = $(".current").html();
+			location.href="/api/stuList?current=1&pageSize="+5;
+		})
+		
+		$(".next").click(function(){
+			var next = $(this).attr("next");
+			location.href="/api/stuList?current="+next+"&pageSize="+5;
+		})
+		
+		$(".last").click(function(){
+			var total = $(".total").html();
+				location.href="/api/stuList?current="+total+"&pageSize="+5;
+		})
+		
+	</script>
+</html>

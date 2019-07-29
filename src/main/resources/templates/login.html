@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="UTF-8">
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+		<META HTTP-EQUIV="Expires" CONTENT="0">
+		<title>登录页面</title>
+
+		<style>
+ 			body { 
+ 				margin: 0px;
+ 				padding: 0px;
+ 				background: url(img/biz.jpg) top no-repeat; 
+ 				background-size: cover; 
+				background: #000000; 
+ 			} 
+			
+ 			#log { 
+ 				width: 20%; 
+ 				position: fixed; 
+ 				top: 200px; 
+ 				right: 200px; 
+ 			} 
+		</style>
+		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+	</head>
+
+	<body>
+		<section>
+			<div class="container" id="vmt" >
+				<div class="row">
+					<div class="col-md-8">
+						<!--	<img src="img/gg.PNG" style="height: 80px;"/>-->
+						<span class="glyphicon glyphicon-grain" style="font-size: 50px;color: #269ABC;"></span>
+						<span style="font-size: 30px;color: #269ABC;">学生奖惩管理系统</span>
+					</div>
+
+				</div>
+				<hr style="border:#269abc solid 7px; " />
+				<div class="row">
+					<div class="col-md-8">
+					</div>
+					<div class="col-md-4 img-rounded" style="border: 1px #269abc solid;margin-top: 20px;padding: 30px;margin-left: -360px;">
+						<div style="padding: 10px 0 20px; text-align: center;"><span class="glyphicon glyphicon-user" style="font-size: 80px;color: #269abc;"></span></div>
+						<form onsubmit="return false">
+							<div class="row form-group form-horizontal">
+								<div class="col-md-8 col-md-push-2">
+									<h2 class="msg" th:text="${MSG}"></h2>
+								</div>
+							</div>
+							<div class="row form-group form-horizontal">
+								<div class="col-md-8 col-md-push-2">
+									<span class="glyphicon glyphicon-user"></span>
+									<input type="text" id="eid" value="" class="form-control" style="width: 230px;" />
+								</div>
+							</div>
+							<div class="row form-group form-horizontal">
+								<div class="col-md-8 col-md-push-2">
+									<span class="glyphicon glyphicon-lock"></span>
+									<input type="password" id="epwd" value="" class="form-control" style="width: 230px;" />
+								</div>
+							</div>
+
+							<div class="row form-group  form-horizontal">
+								<div class="col-md-8 col-md-push-4 ">
+									<button id="dlu" class="btn btn-primary form-control" style="width: 80px; background: #fff;color: #269abc;border: 1px #269abc solid;">登录</label>
+								</div>
+							</div>
+<!-- 							<div><a href="reg.html">还没有账号，先去注册</a></div> -->
+						</form>
+					</div>
+				</div>
+			</div>
+		</section>
+
+	</body>
+	<script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+	<script>
+		//登录
+		$("#dlu").click(function(){
+			var name = $("#eid").val();
+			var pwd = $("#epwd").val();
+			if(name == ""){
+				$(".msg").html("请输入登录账号!");
+				return;
+			}else if(pwd == ""){
+				$(".msg").html("请输入登录密码!");
+				return;
+			}
+			location.href="/api/loginIn?name="+name+"&pwd="+pwd;
+		})
+	</script>
+
+</html>
